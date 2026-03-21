@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { VITE_API_BASE_URL } from '../../constants/common';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../store/appSlices/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        'http://localhost:7777/api/auth/login',
+        VITE_API_BASE_URL + '/api/auth/login',
         {
           emailId: email,
           password: password,
@@ -17,7 +23,13 @@ const Login = () => {
         { withCredentials: true },
       );
 
+      if (!response.data) {
+        throw new Error('No response data received');
+      }
+
+      dispatch(setUser(response.data.data));
       toast.success(response.data.message);
+      navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
       const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
@@ -26,7 +38,7 @@ const Login = () => {
   };
 
   return (
-    <div className='min-h-screen bg-[color:var(--bg-primary)] flex items-center justify-center px-4 py-5 sm:py-12'>
+    <div className='min-h-screen bg-[color:var(--bg-primary)] flex items-center justify-center px-4 py-2 sm:py-6'>
       <div
         className='w-full max-w-sm sm:max-w-md md:max-w-lg rounded-2xl border p-6 sm:p-8 shadow-2xl backdrop-blur'
         style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
