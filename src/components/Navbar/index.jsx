@@ -1,9 +1,14 @@
+import { Heart } from 'lucide-react';
+
 const Navbar = () => {
   return (
     <>
-      <div className='navbar bg-base-300 shadow-sm'>
+      <div className='navbar bg-base-300 shadow-sm p-0.5'>
         <div className='flex-1'>
-          <a className='btn btn-ghost text-xl'>DevTinder</a>
+          <a className='btn btn-ghost text-xl'>
+            <Heart className='w-6 h-6 text-red-500' />
+            DevTinder
+          </a>
         </div>
         <div className='flex gap-2'>
           <div className='dropdown dropdown-end mx-3'>
@@ -35,7 +40,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <h1 className='text-2xl font-bold'>Hello World!</h1>
     </>
   );
 };

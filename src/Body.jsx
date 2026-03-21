@@ -1,13 +1,14 @@
 import React from 'react';
-import { Footer, Navbar } from './components/common';
 import { Outlet } from 'react-router-dom';
+import { Navbar, Footer } from './components';
+
 const Body = () => {
   return (
-    <React.Fragment>
+    <main className='container mx-auto'>
       <Navbar />
       <Outlet />
       <Footer />
-    </React.Fragment>
+    </main>
   );
 };
 
