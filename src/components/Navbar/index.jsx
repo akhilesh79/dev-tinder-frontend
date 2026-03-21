@@ -22,8 +22,8 @@ const Navbar = () => {
         throw new Error('No response data received');
       }
 
-      navigate('/login');
       dispatch(clearUser());
+      navigate('/login');
       toast.success(response.data.message);
     } catch (error) {
       console.error('Logout failed:', error);
