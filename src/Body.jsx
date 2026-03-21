@@ -36,7 +36,8 @@ const Body = () => {
     if (!user) {
       fetchUser();
     }
-  }, [user, dispatch, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className='container mx-auto min-h-screen bg-[color:var(--bg-primary)] text-[color:var(--text-primary)]'>
