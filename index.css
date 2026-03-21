@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Light theme (default) */
+:root,
+[data-theme='light'] {
+    --bg-primary: #f1f5f9;
+    --bg-secondary: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1;
+    --input-text: #1e293b;
+    --button-bg: #4f46e5;
+    --button-text: #ffffff;
+    --button-hover-bg: #4338ca;
+    --link-color: #4f46e5;
+    --link-hover-color: #312e81;
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --border-color: #334155;
+    --input-bg: #0f172a;
+    --input-border: #475569;
+    --input-text: #f1f5f9;
+    --button-bg: #818cf8;
+    --button-text: #0f172a;
+    --button-hover-bg: #6366f1;
+    --link-color: #818cf8;
+    --link-hover-color: #a5b4fc;
+}

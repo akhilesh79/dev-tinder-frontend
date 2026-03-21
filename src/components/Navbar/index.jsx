@@ -1,6 +1,10 @@
-import { Heart } from 'lucide-react';
+import { useContext } from 'react';
+import { Heart, Moon, Sun } from 'lucide-react';
+import { ThemeContext } from '../../context/themeContext';
 
 const Navbar = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   return (
     <>
       <div className='navbar bg-base-300 shadow-sm p-0.5'>
@@ -10,7 +14,19 @@ const Navbar = () => {
             DevTinder
           </a>
         </div>
-        <div className='flex gap-2'>
+        <div className='flex items-center gap-2'>
+          <button
+            type='button'
+            onClick={toggleTheme}
+            aria-label='Toggle dark mode'
+            className='btn btn-ghost btn-square'
+          >
+            {theme === 'dark' ? (
+              <Sun className='w-5 h-5 text-yellow-300' />
+            ) : (
+              <Moon className='w-5 h-5 text-blue-600' />
+            )}
+          </button>
           <div className='dropdown dropdown-end mx-3'>
             <div tabIndex={0} role='button' className='btn btn-ghost btn-circle avatar'>
               <div className='w-10 rounded-full'>

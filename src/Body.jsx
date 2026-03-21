@@ -4,7 +4,7 @@ import { Navbar, Footer } from './components';
 
 const Body = () => {
   return (
-    <main className='container mx-auto'>
+    <main className='container mx-auto min-h-screen bg-[color:var(--bg-primary)] text-[color:var(--text-primary)]'>
       <Navbar />
       <Outlet />
       <Footer />
