@@ -36,14 +36,14 @@ const UserConnections = () => {
 
   if (connections.length === 0) {
     return (
-      <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
+      <div className='overflow-auto flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
         <h1 className='text-2xl font-bold'>No Connections Found</h1>
       </div>
     );
   }
 
   return (
-    <div className='flex flex-col items-center gap-4' style={{ height: 'calc(100vh - 132px)' }}>
+    <div className='overflow-auto flex flex-col items-center gap-4' style={{ height: 'calc(100vh - 132px)' }}>
       <h1 className='text-2xl font-bold my-10'>Connections</h1>
       {connections.map((connection) => (
         <ConnectionCard key={connection._id} connection={connection} />

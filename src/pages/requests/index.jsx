@@ -40,7 +40,7 @@ const Requests = () => {
   }
 
   return (
-    <div className='p-6 max-w-2xl mx-auto' style={{ height: 'calc(100vh - 132px)' }}>
+    <div className='overflow-auto p-6 max-w-2xl mx-auto' style={{ height: 'calc(100vh - 132px)' }}>
       <div className='mb-6'>
         <h1 className='text-3xl font-bold'>Connection Requests</h1>
       </div>
