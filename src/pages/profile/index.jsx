@@ -6,7 +6,7 @@ import { skillOptions, VITE_API_BASE_URL } from '../../constants/common';
 import { setUser } from '../../store/appSlices/userSlice';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
-import { Mail, MapPin, Briefcase } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 
 const Profile = () => {
   const user = useSelector((state) => state.user);
