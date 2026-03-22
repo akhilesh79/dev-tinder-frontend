@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setFeed } from '../../store/appSlices/feedSlice';
 import { toast } from 'react-toastify';
 import UserCard from './UserCard';
+import { Loader } from '../../components';
 
 const Feed = () => {
   const dispatch = useDispatch();
@@ -29,14 +30,7 @@ const Feed = () => {
     }
   };
 
-  if (!feed)
-    return (
-      <>
-        <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
-          <span className='loading loading-ring loading-xl'></span>
-        </div>
-      </>
-    );
+  if (!feed) return <Loader />;
 
   return (
     <>
