@@ -9,10 +9,10 @@ const UserCard = ({ userFeed }) => {
       </figure>
       {/* Age & Gender */}
       <div className='text-center text-sm text-slate-400 mb-1 absolute p-1 left-3'>
-        {age && `${age} years old`} • {gender || 'Gender'}
+        {age && `${age}yrs`} • {gender === 'female' ? 'Female' : 'Male'}
       </div>
 
-      <div className='card-body items-center text-center relative'>
+      <div className='card-body items-center text-center relative p-3'>
         {/* Name */}
         <h3 className='text-center text-2xl font-bold text-white mb-1'>
           {firstName || 'First'} {lastName || ''}
@@ -38,23 +38,15 @@ const UserCard = ({ userFeed }) => {
         )}
 
         {/* icons for interested and ignnored */}
-        <div
-          className='absolute bottom-5 left-1 text-red-500 flex items-center gap-2 font-bold text-lg'
-          style={{
-            transform: 'rotate(20deg)',
-          }}
-        >
-          <X size={20} />
-          <span className='text-xs'>NOPE</span>
-        </div>
-        <div
-          className='absolute bottom-5 right-1 text-green-500 flex items-center gap-2 font-bold text-lg'
-          style={{
-            transform: 'rotate(-20deg)',
-          }}
-        >
-          <span className='text-xs'>LIKE</span>
-          <Heart size={20} />
+        <div className='w-full flex flex-1 justify-between mt-2'>
+          <button className='btn btn-error text-white flex items-center gap-2 font-bold text-lg'>
+            <X size={20} />
+            <span className='text-xs'>NOPE</span>
+          </button>
+          <button className='btn btn-success text-white flex items-center gap-2 font-bold text-lg'>
+            <span className='text-xs'>LIKE</span>
+            <Heart size={20} />
+          </button>
         </div>
       </div>
     </div>
