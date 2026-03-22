@@ -40,7 +40,7 @@ const Body = () => {
   }, []);
 
   return (
-    <main className='container mx-auto bg-[color:var(--bg-primary)] text-[color:var(--text-primary)]'>
+    <main className='container mx-auto h-screen bg-[color:var(--bg-primary)] text-[color:var(--text-primary)]'>
       <Navbar />
       <Outlet />
       <Footer />
