@@ -1,7 +1,33 @@
+import axios from 'axios';
 import { Heart, X } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { VITE_API_BASE_URL } from '../../constants/common';
+import { useDispatch } from 'react-redux';
+import { removeFeed } from '../../store/appSlices/feedSlice';
 
 const UserCard = ({ userFeed }) => {
-  const { profileImage, age, gender, firstName, lastName, about, skills } = userFeed;
+  const { _id, profileImage, age, gender, firstName, lastName, about, skills } = userFeed;
+  const dispatch = useDispatch();
+
+  const handleSendRequest = async (userId, status) => {
+    try {
+      const response = await axios.post(
+        VITE_API_BASE_URL + `/api/request/send/${status}/${userId}`,
+        {},
+        { withCredentials: true },
+      );
+
+      if (!response.data) {
+        throw new Error('No Response Recieved');
+      }
+
+      dispatch(removeFeed(userId));
+      toast.success(`You ${status === 'interested' ? 'liked' : 'ignored'} ${firstName}!`);
+    } catch (error) {
+      console.error(error);
+      toast.error(`Failed to send ${status} request`);
+    }
+  };
   return (
     <div className='card bg-base-100 w-80 shadow-sm relative'>
       <figure className='h-72'>
@@ -39,11 +65,17 @@ const UserCard = ({ userFeed }) => {
 
         {/* icons for interested and ignnored */}
         <div className='w-full flex flex-1 justify-between mt-2'>
-          <button className='btn btn-error text-white flex items-center gap-2 font-bold text-lg'>
+          <button
+            className='btn btn-error text-white flex items-center gap-2 font-bold text-lg'
+            onClick={() => handleSendRequest(_id, 'ignored')}
+          >
             <X size={20} />
             <span className='text-xs'>NOPE</span>
           </button>
-          <button className='btn btn-success text-white flex items-center gap-2 font-bold text-lg'>
+          <button
+            className='btn btn-success text-white flex items-center gap-2 font-bold text-lg'
+            onClick={() => handleSendRequest(_id, 'interested')}
+          >
             <span className='text-xs'>LIKE</span>
             <Heart size={20} />
           </button>

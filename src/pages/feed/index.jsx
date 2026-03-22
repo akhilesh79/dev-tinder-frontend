@@ -32,6 +32,14 @@ const Feed = () => {
 
   if (!feed) return <Loader />;
 
+  if (!feed?.length) {
+    return (
+      <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
+        <h1 className='text-2xl font-bold'>No Users Found</h1>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
