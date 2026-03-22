@@ -42,7 +42,7 @@ const Feed = () => {
 
   return (
     <>
-      <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
+      <div className='overflow-auto flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
         <UserCard userFeed={feed?.[0] || {}} />
       </div>
     </>
