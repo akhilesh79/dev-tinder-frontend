@@ -104,7 +104,10 @@ const Profile = () => {
   };
 
   return (
-    <div className='bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8'>
+    <div
+      className='bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8'
+      style={{ height: 'calc(100vh - 132px)' }}
+    >
       <div className='max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-center'>
         {/* Live Preview Card - Left Side */}
         <div className='lg:col-span-2 '>

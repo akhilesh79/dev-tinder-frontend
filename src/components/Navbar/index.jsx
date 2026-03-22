@@ -66,7 +66,7 @@ const Navbar = () => {
                 </div>
                 <ul
                   tabIndex='-1'
-                  className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow'
+                  className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 m-3 w-52 p-2 shadow'
                 >
                   <li>
                     <Link to='/profile' className='justify-between'>
@@ -74,7 +74,17 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <button onClick={handleLogout} className='justify-between'>
+                    <Link to='/user-connections' className='justify-between'>
+                      Connections
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to='/user-requests' className='justify-between'>
+                      Requests
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout} className='justify-between hover:bg-red-500 hover:text-white'>
                       Logout
                     </button>
                   </li>
