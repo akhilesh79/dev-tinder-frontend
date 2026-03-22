@@ -105,9 +105,9 @@ const Profile = () => {
 
   return (
     <div className='bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8'>
-      <div className='max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8'>
+      <div className='max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-center'>
         {/* Live Preview Card - Left Side */}
-        <div className='lg:col-span-2'>
+        <div className='lg:col-span-2 '>
           <div className='bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 hover:border-slate-600 transition-all'>
             {/* Profile Image Banner */}
             <div className='relative h-40 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden'>
@@ -191,8 +191,11 @@ const Profile = () => {
         </div>
 
         {/* Edit Form - Right Side */}
-        <div className='lg:col-span-3 overflow-y-auto max-h-screen'>
-          <div className='bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 shadow-2xl border border-slate-700'>
+        <div className='lg:col-span-3'>
+          <div
+            className='bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 shadow-2xl border border-slate-700'
+            style={{ maxHeight: 'calc(100vh - 180px)', overflowY: 'auto' }}
+          >
             <div className='mb-8'>
               <h2 className='text-3xl font-bold text-white mb-2'>Edit Profile</h2>
               <p className='text-slate-400'>Update your profile information. Changes are reflected instantly.</p>
