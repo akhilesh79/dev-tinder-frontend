@@ -13,7 +13,7 @@ const RequestCard = ({ request }) => {
   const handleReviewRequest = async (requestId, status) => {
     try {
       const response = await axios.post(
-        VITE_API_BASE_URL + `/api/request/review/${status}/${requestId}`,
+        VITE_API_BASE_URL + `/request/review/${status}/${requestId}`,
         {},
         { withCredentials: true },
       );
