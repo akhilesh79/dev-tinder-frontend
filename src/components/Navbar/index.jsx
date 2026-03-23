@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Heart, Moon, Sun } from 'lucide-react';
+import { Heart, Home, Moon, Sun } from 'lucide-react';
 import { ThemeContext } from '../../context/themeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -42,6 +42,11 @@ const Navbar = () => {
           </Link>
         </div>
         <div className='flex items-center gap-2'>
+          <Link to='/' className='btn btn-ghost gap-1'>
+            <Home className='w-4 h-4' />
+            Home
+          </Link>
+
           <button
             type='button'
             onClick={toggleTheme}
