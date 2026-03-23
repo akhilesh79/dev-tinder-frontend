@@ -18,7 +18,7 @@ const UserConnections = () => {
 
   const fetchConnections = async () => {
     try {
-      const response = await axios.get(VITE_API_BASE_URL + '/api/user/connections', { withCredentials: true });
+      const response = await axios.get(VITE_API_BASE_URL + '/user/connections', { withCredentials: true });
       if (!response.data) {
         throw new Error('No Response Recieved');
       }

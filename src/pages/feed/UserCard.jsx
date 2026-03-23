@@ -12,7 +12,7 @@ const UserCard = ({ userFeed }) => {
   const handleSendRequest = async (userId, status) => {
     try {
       const response = await axios.post(
-        VITE_API_BASE_URL + `/api/request/send/${status}/${userId}`,
+        VITE_API_BASE_URL + `/request/send/${status}/${userId}`,
         {},
         { withCredentials: true },
       );
