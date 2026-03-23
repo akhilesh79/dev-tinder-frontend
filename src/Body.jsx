@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { VITE_API_BASE_URL } from './constants/common';
 import { setUser } from './store/appSlices/userSlice';
-import { toast } from 'react-toastify';
 
 const Body = () => {
   const user = useSelector((state) => state.user);
@@ -25,10 +24,7 @@ const Body = () => {
       } catch (error) {
         console.error('Error fetching user:', error);
         if (error.status === 401) {
-          toast.error(error.message);
           navigate('/login');
-        } else {
-          toast.error(`Failed to fetch user data: ${error.message}`);
         }
       }
     };

@@ -3,7 +3,6 @@ import { VITE_API_BASE_URL } from '../../constants/common';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFeed } from '../../store/appSlices/feedSlice';
-import { toast } from 'react-toastify';
 import UserCard from './UserCard';
 import { Loader } from '../../components';
 
@@ -26,7 +25,6 @@ const Feed = () => {
       dispatch(setFeed(response.data.docs));
     } catch (error) {
       console.error('Error fetching feeds:', error);
-      toast.error(`Failed to fetch feeds: ${error.response.message}`);
     }
   };
 
