@@ -32,18 +32,22 @@ const Feed = () => {
 
   if (!feed?.length) {
     return (
-      <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
-        <h1 className='text-2xl font-bold'>No Users Found</h1>
+      <div className='h-full min-h-[400px] flex flex-col items-center justify-center gap-5 p-6 text-center'>
+        <div className='w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center text-4xl'>👨‍💻</div>
+        <div>
+          <h1 className='text-2xl font-bold text-[color:var(--text-primary)]'>You&apos;re all caught up!</h1>
+          <p className='text-[color:var(--text-secondary)] mt-2 max-w-xs'>
+            No more developers to discover right now. Check back later for new matches!
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
-      <div className='overflow-auto flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
-        <UserCard userFeed={feed?.[0] || {}} />
-      </div>
-    </>
+    <div className='h-full min-h-[400px] flex items-center justify-center p-4'>
+      <UserCard userFeed={feed?.[0] || {}} />
+    </div>
   );
 };
 

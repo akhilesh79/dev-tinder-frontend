@@ -86,29 +86,81 @@ const Login = () => {
   };
 
   return (
-    <div className='overflow-auto' style={{ height: 'calc(100vh - 132px)' }}>
-      <div className='bg-[color:var(--bg-primary)] flex items-center justify-center px-4 py-2 sm:py-6'>
+    <div className='min-h-full flex flex-col lg:flex-row'>
+      {/* Left — Branding panel (desktop only) */}
+      <div className='hidden lg:flex flex-col justify-center items-center flex-1 bg-gradient-to-br from-indigo-600 via-purple-600 to-rose-500 p-12 relative overflow-hidden'>
+        {/* Dot grid pattern */}
         <div
-          className='w-full max-w-sm sm:max-w-md md:max-w-lg rounded-2xl border p-6 sm:p-8 shadow-2xl backdrop-blur'
+          className='absolute inset-0 opacity-[0.12]'
+          style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+          }}
+        ></div>
+
+        {/* Blob accents */}
+        <div className='absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl'></div>
+        <div className='absolute -bottom-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl'></div>
+
+        {/* Content */}
+        <div className='relative z-10 text-center max-w-sm'>
+          <div className='flex items-center justify-center mb-6'>
+            <div className='w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center'>
+              <svg viewBox='0 0 24 24' className='w-10 h-10 fill-white' xmlns='http://www.w3.org/2000/svg'>
+                <path d='M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z' />
+              </svg>
+            </div>
+          </div>
+          <h1 className='text-5xl font-bold font-poppins text-white mb-4 leading-tight'>DevTinder</h1>
+          <p className='text-white/80 text-lg leading-relaxed mb-10'>
+            Connect with developers who code like you. Find your perfect tech partner.
+          </p>
+          <div className='flex flex-wrap justify-center gap-2'>
+            {['React', 'Node.js', 'Python', 'TypeScript', 'Go', 'Rust', 'Vue', 'Next.js'].map((tech) => (
+              <span
+                key={tech}
+                className='px-3 py-1.5 bg-white/15 backdrop-blur-sm text-white text-sm rounded-full border border-white/20 font-medium'
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right — Form panel */}
+      <div className='flex-1 flex items-center justify-center p-6 py-8 bg-[color:var(--bg-primary)]'>
+        <div
+          className='w-full max-w-md rounded-2xl border p-7 sm:p-9 shadow-xl backdrop-blur'
           style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}
         >
-          <h2 className='text-center text-2xl sm:text-3xl font-semibold tracking-tight text-[color:var(--text-primary)] mb-4 sm:mb-6'>
-            Welcome to DevTinder
+          {/* Mobile logo */}
+          <div className='lg:hidden flex items-center justify-center gap-2 mb-6'>
+            <svg viewBox='0 0 24 24' className='w-6 h-6 fill-rose-500' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z' />
+            </svg>
+            <span className='text-xl font-bold font-poppins bg-gradient-to-r from-rose-500 to-indigo-500 bg-clip-text text-transparent'>
+              DevTinder
+            </span>
+          </div>
+
+          <h2 className='text-2xl sm:text-3xl font-bold tracking-tight text-[color:var(--text-primary)] mb-2'>
+            {isLoginFlow ? 'Welcome back 👋' : 'Create account'}
           </h2>
-          <p className='text-center text-xs sm:text-sm text-[color:var(--text-secondary)] mb-6 sm:mb-8'>
+          <p className='text-sm text-[color:var(--text-secondary)] mb-7'>
             {isLoginFlow
-              ? 'Log in to DevTinder to continue your developer journey.'
-              : 'Sign up to DevTinder to start your developer journey.'}
+              ? 'Log in to continue your developer journey.'
+              : 'Sign up to start connecting with developers.'}
           </p>
 
-          <form onSubmit={formik.handleSubmit} className='space-y-5'>
+          <form onSubmit={formik.handleSubmit} className='space-y-4'>
             {!isLoginFlow && (
-              <>
-                {/* First Name Field */}
+              <div className='grid grid-cols-2 gap-3'>
+                {/* First Name */}
                 <div>
                   <label
                     htmlFor='firstName'
-                    className='mb-2 block text-sm font-medium text-[color:var(--text-secondary)]'
+                    className='mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]'
                   >
                     First Name
                   </label>
@@ -116,9 +168,7 @@ const Login = () => {
                     id='firstName'
                     type='text'
                     {...formik.getFieldProps('firstName')}
-                    className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 transition ${
-                      formik.touched.firstName && formik.errors.firstName ? 'border-red-500' : ''
-                    }`}
+                    className='w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition'
                     placeholder='John'
                     style={{
                       backgroundColor: 'var(--input-bg)',
@@ -132,11 +182,11 @@ const Login = () => {
                   )}
                 </div>
 
-                {/* Last Name Field */}
+                {/* Last Name */}
                 <div>
                   <label
                     htmlFor='lastName'
-                    className='mb-2 block text-sm font-medium text-[color:var(--text-secondary)]'
+                    className='mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]'
                   >
                     Last Name
                   </label>
@@ -144,9 +194,7 @@ const Login = () => {
                     id='lastName'
                     type='text'
                     {...formik.getFieldProps('lastName')}
-                    className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 transition ${
-                      formik.touched.lastName && formik.errors.lastName ? 'border-red-500' : ''
-                    }`}
+                    className='w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition'
                     placeholder='Doe'
                     style={{
                       backgroundColor: 'var(--input-bg)',
@@ -159,21 +207,22 @@ const Login = () => {
                     <p className='mt-1 text-xs text-red-500'>{formik.errors.lastName}</p>
                   )}
                 </div>
-              </>
+              </div>
             )}
 
-            {/* Email Field */}
+            {/* Email */}
             <div>
-              <label htmlFor='email' className='mb-2 block text-sm font-medium text-[color:var(--text-secondary)]'>
+              <label
+                htmlFor='email'
+                className='mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]'
+              >
                 Email Address
               </label>
               <input
                 id='email'
                 type='email'
                 {...formik.getFieldProps('email')}
-                className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 transition ${
-                  formik.touched.email && formik.errors.email ? 'border-red-500' : ''
-                }`}
+                className='w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition'
                 placeholder='you@example.com'
                 style={{
                   backgroundColor: 'var(--input-bg)',
@@ -186,9 +235,12 @@ const Login = () => {
               )}
             </div>
 
-            {/* Password Field */}
+            {/* Password */}
             <div>
-              <label htmlFor='password' className='mb-2 block text-sm font-medium text-[color:var(--text-secondary)]'>
+              <label
+                htmlFor='password'
+                className='mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]'
+              >
                 Password
               </label>
               <div className='relative'>
@@ -196,9 +248,7 @@ const Login = () => {
                   id='password'
                   type={showPassword ? 'text' : 'password'}
                   {...formik.getFieldProps('password')}
-                  className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 transition pr-10 ${
-                    formik.touched.password && formik.errors.password ? 'border-red-500' : ''
-                  }`}
+                  className='w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition pr-10'
                   placeholder='At least 6 characters'
                   style={{
                     backgroundColor: 'var(--input-bg)',
@@ -213,7 +263,7 @@ const Login = () => {
                   style={{ color: 'var(--text-secondary)' }}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
               {formik.touched.password && formik.errors.password && (
@@ -221,44 +271,42 @@ const Login = () => {
               )}
             </div>
 
-            {/* Forgot Password Link */}
-            <div className='flex items-center justify-between text-sm'>
-              <button
-                type='button'
-                onClick={handleForgotPassword}
-                className='transition hover:opacity-80'
-                style={{ color: 'var(--link-color)' }}
-              >
-                Forgot password?
-              </button>
-            </div>
+            {/* Forgot password */}
+            {isLoginFlow && (
+              <div className='flex justify-end'>
+                <button
+                  type='button'
+                  onClick={handleForgotPassword}
+                  className='text-xs transition hover:opacity-80'
+                  style={{ color: 'var(--link-color)' }}
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type='submit'
               disabled={formik.isSubmitting || !formik.isValid}
-              className='w-full rounded-xl px-4 py-2 text-base font-semibold transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed'
-              style={{
-                backgroundColor: 'var(--button-bg)',
-                color: 'var(--button-text)',
-              }}
+              className='w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed mt-2'
+              style={{ backgroundColor: 'var(--button-bg)', color: 'var(--button-text)' }}
             >
               {formik.isSubmitting
                 ? isLoginFlow
                   ? 'Logging in...'
-                  : 'Signing up...'
+                  : 'Creating account...'
                 : isLoginFlow
                   ? 'Log In'
-                  : 'Sign Up'}
+                  : 'Create Account'}
             </button>
           </form>
 
-          {/* Sign Up Link */}
-          <p className='mt-6 text-center text-xs text-[color:var(--text-secondary)]'>
+          <p className='mt-5 text-center text-xs text-[color:var(--text-secondary)]'>
             {isLoginFlow ? "Don't have an account? " : 'Already have an account? '}
             <span
               onClick={() => setIsLoginFlow(!isLoginFlow)}
-              className='font-medium cursor-pointer transition hover:opacity-80'
+              className='font-semibold cursor-pointer transition hover:opacity-80'
               style={{ color: 'var(--link-color)' }}
             >
               {isLoginFlow ? 'Sign up' : 'Log in'}

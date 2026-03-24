@@ -33,19 +33,28 @@ const Requests = () => {
     return <Loader />;
   } else if (requests.length === 0) {
     return (
-      <div className='flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
-        <h1 className='text-2xl font-bold'>No Requests Found</h1>
+      <div className='h-full min-h-[400px] flex flex-col items-center justify-center gap-5 p-6 text-center'>
+        <div className='w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center text-4xl'>📭</div>
+        <div>
+          <h1 className='text-2xl font-bold text-[color:var(--text-primary)]'>No requests yet</h1>
+          <p className='text-[color:var(--text-secondary)] mt-2 max-w-xs'>
+            When developers send you connection requests, they&apos;ll appear here.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='overflow-auto p-6 max-w-2xl mx-auto' style={{ height: 'calc(100vh - 132px)' }}>
-      <div className='mb-6'>
-        <h1 className='text-3xl font-bold font-sora text-center'>Connection Requests</h1>
+    <div className='p-6 sm:p-8 max-w-2xl mx-auto'>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold text-[color:var(--text-primary)]'>Connection Requests</h1>
+        <p className='text-[color:var(--text-secondary)] mt-1 text-sm'>
+          {requests.length} pending request{requests.length !== 1 ? 's' : ''}
+        </p>
       </div>
 
-      <div className='space-y-4'>
+      <div className='space-y-3'>
         {requests.map((request) => (
           <RequestCard key={request._id} request={request} />
         ))}

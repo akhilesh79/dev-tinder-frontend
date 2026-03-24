@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import { Heart, Home, Moon, Sun } from 'lucide-react';
+import { useState, useContext } from 'react';
+import { Heart, Moon, Sun, Menu, X, Users, Bell, User, LogOut, Compass } from 'lucide-react';
 import { ThemeContext } from '../../context/themeContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { VITE_API_BASE_URL } from '../../constants/common';
 import { toast } from 'react-toastify';
@@ -12,94 +12,182 @@ const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const user = useSelector((state) => state.user);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       const response = await axios.post(VITE_API_BASE_URL + '/auth/logout', {}, { withCredentials: true });
-      if (!response.data) {
-        throw new Error('No response data received');
-      }
-
       dispatch(clearUser());
       navigate('/login');
-      toast.success(response.data.message);
+      toast.success(response.data?.message || 'Logged out successfully');
     } catch (error) {
       console.error('Logout failed:', error);
-      const errorMessage = error.response?.data?.message || 'Logout failed. Please try again.';
-      toast.error(errorMessage);
+      toast.error(error.response?.data?.message || 'Logout failed. Please try again.');
     }
+    setMobileOpen(false);
   };
 
+  const isActive = (path) => location.pathname === path;
+
+  const navLinks = [
+    { to: '/', label: 'Discover', icon: <Compass size={15} /> },
+    { to: '/user-connections', label: 'Connections', icon: <Users size={15} /> },
+    { to: '/user-requests', label: 'Requests', icon: <Bell size={15} /> },
+    { to: '/profile', label: 'Profile', icon: <User size={15} /> },
+  ];
+
   return (
-    <>
-      <div className='navbar bg-base-300 shadow-sm p-0.5 sticky top-0 z-10'>
-        <div className='flex-1'>
-          <Link to='/' className='btn btn-ghost text-xl'>
-            <Heart className='w-6 h-6 text-red-500' />
-            DevTinder
-          </Link>
-        </div>
-        <div className='flex items-center gap-2'>
-          <Link to='/' className='btn btn-ghost gap-1'>
-            <Home className='w-4 h-4' />
-            Home
+    <header className='shrink-0 sticky top-0 z-50 border-b border-[color:var(--border-color)] bg-[color:var(--bg-secondary)]/90 backdrop-blur-md'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6'>
+        <div className='flex h-16 items-center justify-between gap-4'>
+          {/* Logo */}
+          <Link to='/' className='flex items-center gap-2 group flex-shrink-0'>
+            <Heart className='w-6 h-6 text-rose-500 fill-rose-500 group-hover:scale-110 transition-transform duration-200' />
+            <span className='text-xl font-bold font-poppins bg-gradient-to-r from-rose-500 to-indigo-500 bg-clip-text text-transparent'>
+              DevTinder
+            </span>
           </Link>
 
-          <button
-            type='button'
-            onClick={toggleTheme}
-            aria-label='Toggle dark mode'
-            className='btn btn-ghost btn-square'
-          >
-            {theme === 'dark' ? (
-              <Sun className='w-5 h-5 text-yellow-300' />
-            ) : (
-              <Moon className='w-5 h-5 text-blue-600' />
-            )}
-          </button>
-
+          {/* Desktop Nav */}
           {user && (
-            <div className='flex items-center'>
-              <div>Welcome, {user.firstName}</div>
-              <div className='dropdown dropdown-end'>
-                <div tabIndex={0} role='button' className='btn btn-ghost btn-circle avatar'>
-                  <div className='w-10 rounded-full'>
-                    <img alt='user' src={user.profileImage} />
-                  </div>
-                </div>
-                <ul
-                  tabIndex='-1'
-                  className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 m-3 w-52 p-2 shadow'
+            <nav className='hidden md:flex items-center gap-1 flex-1 justify-center'>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive(link.to)
+                      ? 'bg-indigo-500/10 text-indigo-500'
+                      : 'text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--bg-primary)]'
+                  }`}
                 >
-                  <li>
-                    <Link to='/profile' className='justify-between'>
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to='/user-connections' className='justify-between'>
-                      Connections
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to='/user-requests' className='justify-between'>
-                      Requests
-                    </Link>
-                  </li>
-                  <li>
-                    <button onClick={handleLogout} className='justify-between hover:bg-red-500 hover:text-white'>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+                  {link.icon}
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
           )}
+
+          {/* Right actions */}
+          <div className='flex items-center gap-1 flex-shrink-0'>
+            {/* Theme toggle */}
+            <button
+              type='button'
+              onClick={toggleTheme}
+              aria-label='Toggle theme'
+              className='p-2 rounded-lg text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--bg-primary)] transition-all duration-200'
+            >
+              {theme === 'dark' ? (
+                <Sun size={18} className='text-amber-400' />
+              ) : (
+                <Moon size={18} className='text-indigo-500' />
+              )}
+            </button>
+
+            {user ? (
+              <>
+                {/* Avatar dropdown */}
+                <div className='dropdown dropdown-end'>
+                  <div
+                    tabIndex={0}
+                    role='button'
+                    className='flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[color:var(--bg-primary)] transition-all duration-200 cursor-pointer'
+                  >
+                    <div className='w-8 h-8 rounded-full overflow-hidden ring-2 ring-indigo-500/40 flex-shrink-0'>
+                      <img src={user.profileImage} alt={user.firstName} className='w-full h-full object-cover' />
+                    </div>
+                    <span className='hidden sm:block text-sm font-medium text-[color:var(--text-primary)] max-w-[90px] truncate'>
+                      {user.firstName}
+                    </span>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className='menu menu-sm dropdown-content mt-2 p-2 shadow-xl bg-[color:var(--bg-secondary)] border border-[color:var(--border-color)] rounded-xl w-56 z-50'
+                  >
+                    <li className='px-3 py-1.5 pointer-events-none'>
+                      <span className='font-semibold text-[color:var(--text-primary)] text-sm normal-case'>
+                        {user.firstName} {user.lastName}
+                      </span>
+                    </li>
+                    <div className='my-1 h-px bg-[color:var(--border-color)]'></div>
+                    {navLinks.map((link) => (
+                      <li key={link.to}>
+                        <Link
+                          to={link.to}
+                          className={`flex items-center gap-2 rounded-lg ${
+                            isActive(link.to)
+                              ? 'text-indigo-500 bg-indigo-500/10'
+                              : 'text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]'
+                          }`}
+                        >
+                          {link.icon} {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                    <div className='my-1 h-px bg-[color:var(--border-color)]'></div>
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className='flex w-full items-center gap-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-500'
+                      >
+                        <LogOut size={15} /> Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Mobile hamburger */}
+                <button
+                  type='button'
+                  className='md:hidden p-2 rounded-lg text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--bg-primary)] transition-all duration-200'
+                  onClick={() => setMobileOpen(!mobileOpen)}
+                  aria-label='Toggle menu'
+                >
+                  {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
+              </>
+            ) : (
+              <Link
+                to='/login'
+                className='px-4 py-2 text-sm font-semibold bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-all duration-200'
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
       </div>
-    </>
+
+      {/* Mobile slide-down menu */}
+      {user && mobileOpen && (
+        <div className='md:hidden border-t border-[color:var(--border-color)] bg-[color:var(--bg-secondary)] px-4 py-3 space-y-1 animate-fade-up'>
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                isActive(link.to)
+                  ? 'bg-indigo-500/10 text-indigo-500'
+                  : 'text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-primary)] hover:text-[color:var(--text-primary)]'
+              }`}
+            >
+              {link.icon} {link.label}
+            </Link>
+          ))}
+          <div className='pt-2 border-t border-[color:var(--border-color)]'>
+            <button
+              onClick={handleLogout}
+              className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-500 hover:bg-red-500/10 w-full transition-all'
+            >
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };
 
