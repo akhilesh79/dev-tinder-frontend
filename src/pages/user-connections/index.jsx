@@ -36,18 +36,31 @@ const UserConnections = () => {
 
   if (connections.length === 0) {
     return (
-      <div className='overflow-auto flex justify-center items-center' style={{ height: 'calc(100vh - 132px)' }}>
-        <h1 className='text-2xl font-bold'>No Connections Found</h1>
+      <div className='h-full min-h-[400px] flex flex-col items-center justify-center gap-5 p-6 text-center'>
+        <div className='w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center text-4xl'>🤝</div>
+        <div>
+          <h1 className='text-2xl font-bold text-[color:var(--text-primary)]'>No connections yet</h1>
+          <p className='text-[color:var(--text-secondary)] mt-2 max-w-xs'>
+            Start discovering developers and send connection requests to grow your network!
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='overflow-auto flex flex-col items-center gap-4' style={{ height: 'calc(100vh - 132px)' }}>
-      <h1 className='text-2xl font-bold my-10'>Connections</h1>
-      {connections.map((connection) => (
-        <ConnectionCard key={connection._id} connection={connection} />
-      ))}
+    <div className='p-6 sm:p-8 max-w-7xl mx-auto'>
+      <div className='mb-8'>
+        <h1 className='text-3xl font-bold text-[color:var(--text-primary)]'>Your Connections</h1>
+        <p className='text-[color:var(--text-secondary)] mt-1 text-sm'>
+          {connections.length} developer{connections.length !== 1 ? 's' : ''} in your network
+        </p>
+      </div>
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
+        {connections.map((connection) => (
+          <ConnectionCard key={connection._id} connection={connection} />
+        ))}
+      </div>
     </div>
   );
 };

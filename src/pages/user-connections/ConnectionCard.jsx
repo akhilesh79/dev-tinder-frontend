@@ -1,23 +1,34 @@
 const ConnectionCard = ({ connection }) => {
   const { firstName, lastName, age, gender, profileImage, about } = connection;
   return (
-    <div className='card bg-base-100 shadow-sm flex flex-col sm:flex-row items-center sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 w-1/2'>
-      <div className='card-image w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex-shrink-0'>
-        <img src={profileImage} alt={`photo`} className='rounded-full object-cover w-full h-full' />
+    <div className='bg-[color:var(--bg-secondary)] border border-[color:var(--border-color)] rounded-2xl overflow-hidden hover:shadow-lg hover:border-indigo-500/30 transition-all duration-300 group'>
+      {/* Mini banner with avatar */}
+      <div className='relative h-16 bg-gradient-to-r from-indigo-600/25 to-purple-600/25'>
+        <div className='absolute -bottom-7 left-4'>
+          <div className='w-14 h-14 rounded-full overflow-hidden border-3 border-[color:var(--bg-secondary)] ring-2 ring-[color:var(--border-color)] group-hover:ring-indigo-500/40 transition-all'>
+            {profileImage ? (
+              <img src={profileImage} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
+            ) : (
+              <div className='w-full h-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold'>
+                {(firstName || 'D').charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      <div className='flex-1 text-center sm:text-left'>
-        <h2 className='font-bold text-lg sm:text-xl'>
+
+      {/* Content */}
+      <div className='pt-9 px-4 pb-4'>
+        <h2 className='font-bold text-sm text-[color:var(--text-primary)] truncate'>
           {firstName} {lastName}
         </h2>
         {age && gender && (
-          <p className='text-xs sm:text-sm text-base-content/70'>
-            {age} years old, {gender}
+          <p className='text-xs text-[color:var(--text-tertiary)] mt-0.5'>
+            {age} yrs · <span className='capitalize'>{gender}</span>
           </p>
         )}
         {about && (
-          <p className='text-xs sm:text-sm mt-2 line-clamp-2 sm:line-clamp-3 text-base-content/80' title={about}>
-            {about}
-          </p>
+          <p className='text-xs mt-2 line-clamp-2 text-[color:var(--text-secondary)] leading-relaxed'>{about}</p>
         )}
       </div>
     </div>

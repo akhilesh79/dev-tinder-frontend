@@ -6,9 +6,10 @@ import { ThemeProvider } from './context/ThemeProvider';
 import { Provider } from 'react-redux';
 import appStore from './store/appStore';
 import Feed from './pages/feed';
-import Profile from './pages/profile';
-import Requests from './pages/requests';
-import UserConnections from './pages/user-connections';
+import React from 'react';
+const Profile = React.lazy(() => import('./pages/profile'));
+const UserConnections = React.lazy(() => import('./pages/user-connections'));
+const Requests = React.lazy(() => import('./pages/requests'));
 
 const App = () => {
   return (
