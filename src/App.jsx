@@ -10,6 +10,9 @@ import React from 'react';
 const Profile = React.lazy(() => import('./pages/profile'));
 const UserConnections = React.lazy(() => import('./pages/user-connections'));
 const Requests = React.lazy(() => import('./pages/requests'));
+const PrivacyPolicy = React.lazy(() => import('./pages/policy/PrivacyPolicy'));
+const TermsOfService = React.lazy(() => import('./pages/policy/TermsOfService'));
+const RefundPolicy = React.lazy(() => import('./pages/policy/RefundPolicy'));
 
 const App = () => {
   return (
@@ -25,6 +28,10 @@ const App = () => {
                 <Route path='/user-connections' element={<UserConnections />} />
                 <Route path='/user-requests' element={<Requests />} />
               </Route>
+              {/* Public policy pages — no auth required */}
+              <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+              <Route path='/terms-of-service' element={<TermsOfService />} />
+              <Route path='/refund-policy' element={<RefundPolicy />} />
             </Routes>
           </BrowserRouter>
           <ToastContainer position='bottom-right' />
