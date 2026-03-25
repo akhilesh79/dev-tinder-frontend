@@ -17,9 +17,11 @@ const PlanCard = ({ plan }) => {
       const response = await axios.get(VITE_API_BASE_URL + '/payments/verify', { withCredentials: true });
       if (!response.data) throw new Error('No response data');
       const { user } = response.data;
-      if (user) {
+      if (user.isPremiumUser) {
         dispatch(updateUser(user));
         toast.success('Payment successful! You are now a premium user.');
+      } else {
+        toast.error('Something went wrong. Please check dashboard for details.');
       }
     } catch (error) {
       console.error('Payment verification error:', error);
