@@ -40,8 +40,8 @@ const Navbar = () => {
 
   const isPremiumActive = location.pathname === '/premium';
   const isMember = !!user?.isPremiumUser;
-  const memberTierLabel = user?.membershipType
-    ? user.membershipType.charAt(0).toUpperCase() + user.membershipType.slice(1).toLowerCase()
+  const memberTierLabel = user?.mememberShipType
+    ? user.mememberShipType.charAt(0).toUpperCase() + user.mememberShipType.slice(1).toLowerCase()
     : 'Member';
 
   return (

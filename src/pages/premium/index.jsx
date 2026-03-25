@@ -34,7 +34,7 @@ const TIER_META = {
 
 /* ─── Already‑premium screen ────────────────────────────────────────────────── */
 const AlreadyPremium = ({ user }) => {
-  const tier = (user.membershipType || 'gold').toLowerCase();
+  const tier = (user.mememberShipType || 'gold').toLowerCase();
   const meta = TIER_META[tier] || TIER_META.gold;
   const planDef = plans.find((p) => p.id === tier) || plans[2];
   // Plans that are an upgrade (higher index)
