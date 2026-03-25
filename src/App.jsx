@@ -13,6 +13,7 @@ const Requests = React.lazy(() => import('./pages/requests'));
 const PrivacyPolicy = React.lazy(() => import('./pages/policy/PrivacyPolicy'));
 const TermsOfService = React.lazy(() => import('./pages/policy/TermsOfService'));
 const RefundPolicy = React.lazy(() => import('./pages/policy/RefundPolicy'));
+const Premium = React.lazy(() => import('./pages/premium'));
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/user-connections' element={<UserConnections />} />
                 <Route path='/user-requests' element={<Requests />} />
+                <Route path='/premium' element={<Premium />} />
               </Route>
               {/* Public policy pages — no auth required */}
               <Route path='/privacy-policy' element={<PrivacyPolicy />} />

@@ -1,3 +1,15 @@
+import {
+  MessageCircle,
+  Zap,
+  BookMarked,
+  TrendingUp,
+  Eye,
+  Star,
+  BadgeCheck,
+  Infinity as InfinityIcon,
+  ShieldCheck,
+} from 'lucide-react';
+
 export const VITE_API_BASE_URL = '/api';
 export const skillOptions = [
   // Frontend Skills
@@ -59,4 +71,87 @@ export const skillOptions = [
   { value: 'git', label: 'Git/GitHub' },
   { value: 'testing', label: 'Testing (Jest, Mocha, Pytest)' },
   { value: 'agile', label: 'Agile/Scrum' },
+];
+
+export const plans = [
+  {
+    id: 'bronze',
+    name: 'Bronze',
+    tagline: 'Kickstart your dev journey',
+    monthlyPrice: 99,
+    annualPrice: 799,
+    gradient: 'from-amber-700 via-orange-600 to-amber-500',
+    glowColor: 'shadow-amber-500/20',
+    accentColor: 'amber',
+    icon: '🥉',
+    popular: false,
+    cta: '🚀 Start with Bronze',
+    features: [
+      { icon: MessageCircle, text: '20 messages per chat connection', available: true },
+      { icon: BadgeCheck, text: 'Blue tick verification', available: false },
+      { icon: TrendingUp, text: 'Basic profile visibility boost', available: true },
+      { icon: Eye, text: 'See who viewed your profile', available: false },
+      { icon: Star, text: 'Super likes (2 / day)', available: false },
+      { icon: BookMarked, text: '5 saved course suggestions', available: true, comingSoon: true },
+      { icon: Zap, text: 'Advanced developer filters', available: false },
+    ],
+  },
+  {
+    id: 'silver',
+    name: 'Silver',
+    tagline: 'Perfect for active networkers',
+    monthlyPrice: 199,
+    annualPrice: 1599,
+    gradient: 'from-slate-600 via-zinc-400 to-slate-300',
+    glowColor: 'shadow-indigo-500/25',
+    accentColor: 'indigo',
+    icon: '🥈',
+    popular: true,
+    cta: '⚡ Get Silver',
+    features: [
+      { icon: MessageCircle, text: '100 messages per chat connection', available: true },
+      { icon: BadgeCheck, text: 'Blue tick verification', available: true },
+      { icon: TrendingUp, text: 'Priority profile visibility boost', available: true },
+      { icon: Eye, text: 'See who viewed your profile', available: true },
+      { icon: Star, text: 'Super likes (5 / day)', available: false },
+      { icon: BookMarked, text: '25 saved course suggestions', available: true, comingSoon: true },
+      { icon: Zap, text: 'Advanced developer filters', available: false },
+    ],
+  },
+  {
+    id: 'gold',
+    name: 'Gold',
+    tagline: 'The ultimate DevTinder experience',
+    monthlyPrice: 399,
+    annualPrice: 2999,
+    gradient: 'from-yellow-400 via-amber-400 to-orange-400',
+    glowColor: 'shadow-yellow-500/25',
+    accentColor: 'yellow',
+    icon: '👑',
+    popular: false,
+    cta: '👑 Go Gold',
+    features: [
+      { icon: InfinityIcon, text: 'Unlimited messages per connection', available: true },
+      { icon: BadgeCheck, text: 'Blue tick verification', available: true },
+      { icon: TrendingUp, text: 'Maximum profile visibility boost', available: true },
+      { icon: Eye, text: 'See who viewed your profile', available: true },
+      { icon: Star, text: 'Unlimited super likes', available: true },
+      { icon: BookMarked, text: 'Unlimited saved course suggestions', available: true, comingSoon: true },
+      { icon: Zap, text: 'Advanced developer filters', available: true },
+    ],
+  },
+];
+
+export const highlights = [
+  { icon: MessageCircle, label: 'Chat Messages', bronze: '20 / chat', silver: '100 / chat', gold: 'Unlimited' },
+  { icon: BadgeCheck, label: 'Blue Tick', bronze: false, silver: true, gold: true },
+  { icon: Eye, label: 'Profile viewers', bronze: false, silver: true, gold: true },
+  { icon: Star, label: 'Super Likes', bronze: '2 / day', silver: '5 / day', gold: 'Unlimited' },
+  { icon: BookMarked, label: 'Course Suggestions', bronze: '5', silver: '25', gold: 'Unlimited' },
+  { icon: Zap, label: 'Dev Filters', bronze: false, silver: false, gold: true },
+];
+
+export const trustItems = [
+  { label: 'Secured by Razorpay', Icon: ShieldCheck },
+  { label: 'Instant activation', Icon: Zap },
 ];

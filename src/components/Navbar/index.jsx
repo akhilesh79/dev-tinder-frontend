@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Heart, Moon, Sun, Menu, X, Users, Bell, User, LogOut, Compass } from 'lucide-react';
+import { Heart, Moon, Sun, Menu, X, Users, Bell, User, LogOut, Compass, Crown, CheckCircle2 } from 'lucide-react';
 import { ThemeContext } from '../../context/themeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -38,6 +38,12 @@ const Navbar = () => {
     { to: '/profile', label: 'Profile', icon: <User size={15} /> },
   ];
 
+  const isPremiumActive = location.pathname === '/premium';
+  const isMember = !!user?.isPremiumUser;
+  const memberTierLabel = user?.membershipType
+    ? user.membershipType.charAt(0).toUpperCase() + user.membershipType.slice(1).toLowerCase()
+    : 'Member';
+
   return (
     <header className='shrink-0 sticky top-0 z-50 border-b border-[color:var(--border-color)] bg-[color:var(--bg-secondary)]/90 backdrop-blur-md'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6'>
@@ -67,6 +73,32 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              {/* Premium link — adapts to membership state */}
+              <Link
+                to='/premium'
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  isMember
+                    ? isPremiumActive
+                      ? 'bg-yellow-400/20 text-yellow-500'
+                      : 'text-yellow-500 hover:bg-yellow-400/10'
+                    : isPremiumActive
+                      ? 'bg-gradient-to-r from-yellow-400/20 to-amber-400/20 text-yellow-500'
+                      : 'text-yellow-500 hover:bg-yellow-400/10'
+                }`}
+              >
+                {isMember ? (
+                  <>
+                    <Crown size={14} className='fill-yellow-500' />
+                    {memberTierLabel}
+                    <CheckCircle2 size={11} className='text-emerald-400' />
+                  </>
+                ) : (
+                  <>
+                    <Crown size={14} className='fill-yellow-500' />
+                    Premium
+                  </>
+                )}
+              </Link>
             </nav>
           )}
 
@@ -177,6 +209,22 @@ const Navbar = () => {
               {link.icon} {link.label}
             </Link>
           ))}
+          <Link
+            to='/premium'
+            onClick={() => setMobileOpen(false)}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              isPremiumActive ? 'bg-yellow-400/15 text-yellow-500' : 'text-yellow-500 hover:bg-yellow-400/10'
+            }`}
+          >
+            <Crown size={15} className='fill-yellow-500' />
+            {isMember ? (
+              <span className='flex items-center gap-1.5'>
+                {memberTierLabel} <CheckCircle2 size={12} className='text-emerald-400' />
+              </span>
+            ) : (
+              'Premium'
+            )}
+          </Link>
           <div className='pt-2 border-t border-[color:var(--border-color)]'>
             <button
               onClick={handleLogout}
