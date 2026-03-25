@@ -1,4 +1,5 @@
 import { Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -12,7 +13,28 @@ const Footer = () => {
           <span className='hidden sm:inline'>© {new Date().getFullYear()} DevTinder</span>
         </div>
         <p className='text-[color:var(--text-tertiary)] text-xs sm:hidden'>© {new Date().getFullYear()} DevTinder</p>
-        <p className='text-[color:var(--text-tertiary)] text-xs tracking-wide'>Connect · Collaborate · Code</p>
+        <nav className='flex flex-wrap items-center justify-center gap-x-3 gap-y-1'>
+          <Link
+            to='/privacy-policy'
+            className='text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] text-xs transition-colors'
+          >
+            Privacy Policy
+          </Link>
+          <span className='text-[color:var(--text-tertiary)] text-xs'>·</span>
+          <Link
+            to='/terms-of-service'
+            className='text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] text-xs transition-colors'
+          >
+            Terms of Service
+          </Link>
+          <span className='text-[color:var(--text-tertiary)] text-xs'>·</span>
+          <Link
+            to='/refund-policy'
+            className='text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] text-xs transition-colors'
+          >
+            Refund Policy
+          </Link>
+        </nav>
       </div>
     </footer>
   );
