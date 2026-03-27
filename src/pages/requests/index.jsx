@@ -12,7 +12,7 @@ const Requests = () => {
   const requests = useSelector((state) => state.requests);
   const requestRecieved = async () => {
     try {
-      const response = await axios.get(VITE_API_BASE_URL + '/user/requests/recieved', { withCredentials: true });
+      const response = await axios.get(VITE_API_BASE_URL + 'api/user/requests/recieved', { withCredentials: true });
       if (!response.data) {
         throw new Error('No Response Recieved');
       }

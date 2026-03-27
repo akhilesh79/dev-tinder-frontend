@@ -192,7 +192,7 @@ const Premium = () => {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await axios.get(VITE_API_BASE_URL + '/payments/verify', { withCredentials: true });
+        const res = await axios.get(VITE_API_BASE_URL + 'api/payments/verify', { withCredentials: true });
         if (res.data?.user) {
           dispatch(updateUser(res.data.user));
         }

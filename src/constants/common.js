@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-export const VITE_API_BASE_URL = '/api';
+export const VITE_API_BASE_URL = location.hostname === 'localhost' ? 'http://localhost:7777/' : '/api/';
 export const skillOptions = [
   // Frontend Skills
   { value: 'react', label: 'React' },

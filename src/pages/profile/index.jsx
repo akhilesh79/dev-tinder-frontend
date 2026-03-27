@@ -36,7 +36,7 @@ const Profile = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(VITE_API_BASE_URL + '/profile/edit', values, { withCredentials: true });
+        const response = await axios.post(VITE_API_BASE_URL + 'api/profile/edit', values, { withCredentials: true });
 
         if (!response.data) {
           throw new Error('No response data received');
