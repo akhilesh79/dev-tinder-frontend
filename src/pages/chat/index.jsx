@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ArrowLeft, Send, Check, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Send, Check, CheckCheck, Loader2 } from 'lucide-react';
+import axios from 'axios';
 import { createSocketConnection } from '../../utils/socket';
+import { VITE_API_BASE_URL } from '../../constants/common';
 
 const MessageStatus = ({ status }) => {
   if (status === 'read') return <CheckCheck size={12} className='text-indigo-300' />;
@@ -10,8 +12,12 @@ const MessageStatus = ({ status }) => {
   return <Check size={12} className='opacity-40' />;
 };
 
-const MessageBubble = ({ message }) => {
-  const isMe = message.sender === 'me';
+const formatTime = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+const MessageBubble = ({ message, isMe }) => {
   return (
     <div className={`flex items-end gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'} mt-3`}>
       <div
@@ -27,7 +33,7 @@ const MessageBubble = ({ message }) => {
         <p className='break-words'>{message.text}</p>
         <div className={`flex items-center gap-1 mt-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
           <span className={`text-[10px] ${isMe ? 'text-indigo-200' : 'text-[color:var(--text-tertiary)]'}`}>
-            {message.time}
+            {formatTime(message.time)}
           </span>
           {isMe && <MessageStatus status={message.status} />}
         </div>
@@ -51,14 +57,22 @@ const Chat = () => {
   const navigate = useNavigate();
   const loggedInUser = useSelector((state) => state.user);
   const connections = useSelector((state) => state.connections);
+  const PAGE_SIZE = 20;
 
   const targetUser = connections?.find((c) => c._id === targetUserId);
 
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const messagesEndRef = useRef(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
   const socketRef = useRef(null);
+  const loadedPagesRef = useRef(new Set());
+  const currentPageRef = useRef(1);
+  const pendingScrollRef = useRef(null);
+  const paginationReadyRef = useRef(false);
+  const lastScrollTopRef = useRef(0);
 
   const connectedUser = useMemo(() => {
     if (!loggedInUser || !targetUser) return null;
@@ -74,24 +88,158 @@ const Chat = () => {
     };
   }, [loggedInUser, targetUser]);
 
+  const scrollToBottom = useCallback((behavior = 'auto') => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
+
+    requestAnimationFrame(() => {
+      lastScrollTopRef.current = container.scrollTop;
+      paginationReadyRef.current = true;
+    });
+  }, []);
+
+  useEffect(() => {
+    setMessages([]);
+    setHasMore(false);
+    loadedPagesRef.current.clear();
+    currentPageRef.current = 1;
+    pendingScrollRef.current = null;
+    paginationReadyRef.current = false;
+    lastScrollTopRef.current = 0;
+  }, [targetUserId]);
+
+  const fetchMessages = useCallback(
+    async (pageNum) => {
+      if (!targetUserId) return;
+      const pageKey = `${targetUserId}:${pageNum}`;
+      if (loadedPagesRef.current.has(pageKey)) return;
+
+      loadedPagesRef.current.add(pageKey);
+      setLoadingMore(true);
+      try {
+        const res = await axios.get(
+          `${VITE_API_BASE_URL}/user/chat/${targetUserId}?page=${pageNum}&limit=${PAGE_SIZE}`,
+          {
+            withCredentials: true,
+          },
+        );
+        const { docs, hasNextPage } = res.data;
+        setHasMore(hasNextPage);
+        currentPageRef.current = pageNum;
+
+        if (pageNum === 1) {
+          pendingScrollRef.current = 'auto';
+          setMessages(docs);
+        } else {
+          // Prepend older messages, preserve scroll position
+          const container = messagesContainerRef.current;
+          const prevScrollHeight = container?.scrollHeight || 0;
+
+          setMessages((prev) => [...docs, ...prev]);
+
+          // After state update, restore scroll so user doesn't jump
+          requestAnimationFrame(() => {
+            if (container) {
+              container.scrollTop = container.scrollHeight - prevScrollHeight;
+            }
+          });
+        }
+      } catch (err) {
+        loadedPagesRef.current.delete(pageKey);
+        console.error('Error fetching chat history:', err.message);
+      } finally {
+        setLoadingMore(false);
+      }
+    },
+    [targetUserId],
+  );
+
+  // Initial load
+  useEffect(() => {
+    fetchMessages(1);
+  }, [fetchMessages]);
+
+  // Socket for real-time events only
   useEffect(() => {
     if (!connectedUser) return;
     const socket = createSocketConnection();
     socketRef.current = socket;
     socket.emit('joinChat', { ...connectedUser });
 
+    // Receive new real-time messages
     socket.on('receiveMessage', (newMsg) => {
+      pendingScrollRef.current = 'smooth';
       setMessages((prev) => [...prev, newMsg]);
+
+      // Only mark as read if the tab is actually visible to the user
+      if (newMsg.sender !== connectedUser.sourceUser.userId && document.visibilityState === 'visible') {
+        socket.emit('markAsRead', { ...connectedUser });
+      }
     });
 
+    // When user switches back to this tab, mark unread messages as read
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        socket.emit('markAsRead', { ...connectedUser });
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Bulk status update (delivered / read) for all messages from a user
+    socket.on('messageStatusBulkUpdate', ({ status, updatedBy }) => {
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg.sender !== updatedBy) {
+            return { ...msg, status };
+          }
+          return msg;
+        }),
+      );
+    });
+
+    socket.on('chatError', ({ message }) => {
+      console.error('Chat error:', message);
+    });
+
+    // Mark existing messages as read on open only if tab is visible
+    if (document.visibilityState === 'visible') {
+      socket.emit('markAsRead', { ...connectedUser });
+    }
+
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       socket.disconnect();
     };
   }, [connectedUser]);
 
+  // Scroll to bottom on initial load and new messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (!pendingScrollRef.current) return;
+
+    const behavior = pendingScrollRef.current;
+    pendingScrollRef.current = null;
+    scrollToBottom(behavior);
+  }, [messages, scrollToBottom]);
+
+  // Load more messages when scrolling to the top
+  const handleScroll = useCallback(() => {
+    const container = messagesContainerRef.current;
+    if (!container || loadingMore || !hasMore || !paginationReadyRef.current) return;
+
+    const currentScrollTop = container.scrollTop;
+    const isScrollingUp = currentScrollTop < lastScrollTopRef.current;
+
+    if (isScrollingUp && currentScrollTop < 50) {
+      fetchMessages(currentPageRef.current + 1);
+    }
+
+    lastScrollTopRef.current = currentScrollTop;
+  }, [loadingMore, hasMore, fetchMessages]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -105,6 +253,7 @@ const Chat = () => {
       text,
       ...connectedUser,
     };
+    pendingScrollRef.current = 'smooth';
     setInputValue('');
     socket.emit('sendMessage', newMsg);
   };
@@ -168,14 +317,22 @@ const Chat = () => {
       </div>
 
       {/* Messages */}
-      <div className='flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-indigo-500/20 scrollbar-track-transparent'>
-        <DateSeparator label='Today' />
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className='flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-thumb-indigo-500/20 scrollbar-track-transparent'
+      >
+        {loadingMore && (
+          <div className='flex justify-center py-2'>
+            <Loader2 size={18} className='animate-spin text-indigo-400' />
+          </div>
+        )}
+        {!hasMore && messages.length > 0 && <DateSeparator label='Beginning of conversation' />}
 
         {messages.map((msg) => {
-          return <MessageBubble key={msg.id} message={msg} />;
+          const isMe = msg.sender === loggedInUser?._id;
+          return <MessageBubble key={msg._id} message={msg} isMe={isMe} />;
         })}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
