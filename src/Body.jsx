@@ -16,7 +16,7 @@ const Body = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(VITE_API_BASE_URL + '/profile/view', { withCredentials: true });
+        const response = await axios.get(VITE_API_BASE_URL + 'api/profile/view', { withCredentials: true });
 
         if (!response.data) {
           throw new Error('No response data received');

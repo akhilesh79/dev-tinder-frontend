@@ -38,7 +38,7 @@ const Login = () => {
       try {
         if (isLoginFlow) {
           const response = await axios.post(
-            VITE_API_BASE_URL + '/auth/login',
+            VITE_API_BASE_URL + 'api/auth/login',
             {
               emailId: values.email,
               password: values.password,
@@ -55,7 +55,7 @@ const Login = () => {
           navigate('/');
         } else {
           const response = await axios.post(
-            VITE_API_BASE_URL + '/auth/signup',
+            VITE_API_BASE_URL + 'api/auth/signup',
             {
               firstName: values.firstName,
               lastName: values.lastName,

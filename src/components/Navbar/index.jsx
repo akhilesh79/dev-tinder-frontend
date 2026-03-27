@@ -19,7 +19,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post(VITE_API_BASE_URL + '/auth/logout', {}, { withCredentials: true });
+      const response = await axios.post(VITE_API_BASE_URL + 'api/auth/logout', {}, { withCredentials: true });
       disconnectSocketConnection();
       dispatch(clearUser());
       navigate('/login');

@@ -17,7 +17,7 @@ const Feed = () => {
 
   const fetchFeeds = async () => {
     try {
-      const response = await axios.get(VITE_API_BASE_URL + '/user/feeds', { withCredentials: true });
+      const response = await axios.get(VITE_API_BASE_URL + 'api/user/feeds', { withCredentials: true });
       if (!response.data) {
         throw new Error('No response data received');
       }

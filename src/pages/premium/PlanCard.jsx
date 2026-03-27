@@ -14,7 +14,7 @@ const PlanCard = ({ plan }) => {
 
   const verifyPaymentStatus = async () => {
     try {
-      const response = await axios.get(VITE_API_BASE_URL + '/payments/verify', { withCredentials: true });
+      const response = await axios.get(VITE_API_BASE_URL + 'api/payments/verify', { withCredentials: true });
       if (!response.data) throw new Error('No response data');
       const { user } = response.data;
       if (user.isPremiumUser) {
@@ -33,7 +33,7 @@ const PlanCard = ({ plan }) => {
     // Placeholder for actual CTA action (e.g., redirect to checkout)
     try {
       const reponse = await axios.post(
-        VITE_API_BASE_URL + '/payments/order',
+        VITE_API_BASE_URL + 'api/payments/order',
         { mememberShipType: plan.id },
         { withCredentials: true },
       );
