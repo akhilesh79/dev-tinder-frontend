@@ -1,5 +1,29 @@
+import { MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const formatLastSeen = (lastSeen) => {
+  if (!lastSeen) {
+    return 'Offline';
+  }
+
+  const diffInMinutes = Math.max(1, Math.floor((Date.now() - new Date(lastSeen).getTime()) / 60000));
+
+  if (diffInMinutes < 60) {
+    return `Last seen ${diffInMinutes}m ago`;
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `Last seen ${diffInHours}h ago`;
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `Last seen ${diffInDays}d ago`;
+};
+
 const ConnectionCard = ({ connection }) => {
-  const { firstName, lastName, age, gender, profileImage, about } = connection;
+  const { firstName, lastName, age, gender, profileImage, about, isOnline, lastSeen, unreadCount } = connection;
+
   return (
     <div className='bg-[color:var(--bg-secondary)] border border-[color:var(--border-color)] rounded-2xl overflow-hidden hover:shadow-lg hover:border-indigo-500/30 transition-all duration-300 group'>
       {/* Mini banner with avatar */}
@@ -22,6 +46,12 @@ const ConnectionCard = ({ connection }) => {
         <h2 className='font-bold text-sm text-[color:var(--text-primary)] truncate'>
           {firstName} {lastName}
         </h2>
+        <div className='mt-1 flex items-center gap-2'>
+          <span className={`h-2 w-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-slate-500'}`} />
+          <p className={`text-[11px] ${isOnline ? 'text-green-400' : 'text-[color:var(--text-tertiary)]'}`}>
+            {isOnline ? 'Online' : formatLastSeen(lastSeen)}
+          </p>
+        </div>
         {age && gender && (
           <p className='text-xs text-[color:var(--text-tertiary)] mt-0.5'>
             {age} yrs · <span className='capitalize'>{gender}</span>
@@ -30,6 +60,23 @@ const ConnectionCard = ({ connection }) => {
         {about && (
           <p className='text-xs mt-2 line-clamp-2 text-[color:var(--text-secondary)] leading-relaxed'>{about}</p>
         )}
+
+        {/* Chat button */}
+        <Link
+          to={`/chat/${connection._id}`}
+          className='relative mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium
+            bg-indigo-500/10 text-indigo-400 border border-indigo-500/20
+            hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:text-indigo-300
+            active:scale-95 transition-all duration-200'
+        >
+          <MessageCircle size={13} />
+          Message
+          {unreadCount > 0 && (
+            <span className='absolute -top-2 -right-2 min-w-5 h-5 rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white flex items-center justify-center'>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </Link>
       </div>
     </div>
   );

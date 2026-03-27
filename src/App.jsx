@@ -14,6 +14,7 @@ const PrivacyPolicy = React.lazy(() => import('./pages/policy/PrivacyPolicy'));
 const TermsOfService = React.lazy(() => import('./pages/policy/TermsOfService'));
 const RefundPolicy = React.lazy(() => import('./pages/policy/RefundPolicy'));
 const Premium = React.lazy(() => import('./pages/premium'));
+const Chat = React.lazy(() => import('./pages/chat'));
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
                 <Route path='/user-connections' element={<UserConnections />} />
                 <Route path='/user-requests' element={<Requests />} />
                 <Route path='/premium' element={<Premium />} />
+                <Route path='/chat/:targetUserId' element={<Chat />} />
               </Route>
               {/* Public policy pages — no auth required */}
               <Route path='/privacy-policy' element={<PrivacyPolicy />} />
