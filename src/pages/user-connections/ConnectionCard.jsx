@@ -1,3 +1,6 @@
+import { MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 const ConnectionCard = ({ connection }) => {
   const { firstName, lastName, age, gender, profileImage, about } = connection;
   return (
@@ -30,6 +33,18 @@ const ConnectionCard = ({ connection }) => {
         {about && (
           <p className='text-xs mt-2 line-clamp-2 text-[color:var(--text-secondary)] leading-relaxed'>{about}</p>
         )}
+
+        {/* Chat button */}
+        <Link
+          to={`/chat/${connection._id}`}
+          className='mt-3 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium
+            bg-indigo-500/10 text-indigo-400 border border-indigo-500/20
+            hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:text-indigo-300
+            active:scale-95 transition-all duration-200'
+        >
+          <MessageCircle size={13} />
+          Message
+        </Link>
       </div>
     </div>
   );
