@@ -143,7 +143,7 @@ const Chat = () => {
       setLoadingMore(true);
       try {
         const res = await axios.get(
-          `${VITE_API_BASE_URL}/user/chat/${targetUserId}?page=${pageNum}&limit=${PAGE_SIZE}`,
+          VITE_API_BASE_URL + `api/user/chat/${targetUserId}?page=${pageNum}&limit=${PAGE_SIZE}`,
           {
             withCredentials: true,
           },
