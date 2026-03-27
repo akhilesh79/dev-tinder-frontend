@@ -7,6 +7,7 @@ import axios from 'axios';
 import { VITE_API_BASE_URL } from '../../constants/common';
 import { toast } from 'react-toastify';
 import { clearUser } from '../../store/appSlices/userSlice';
+import { disconnectSocketConnection } from '../../utils/socket';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -19,6 +20,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(VITE_API_BASE_URL + '/auth/logout', {}, { withCredentials: true });
+      disconnectSocketConnection();
       dispatch(clearUser());
       navigate('/login');
       toast.success(response.data?.message || 'Logged out successfully');

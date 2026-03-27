@@ -6,6 +6,26 @@ import axios from 'axios';
 import { createSocketConnection } from '../../utils/socket';
 import { VITE_API_BASE_URL } from '../../constants/common';
 
+const formatLastSeen = (lastSeen) => {
+  if (!lastSeen) {
+    return 'Offline';
+  }
+
+  const diffInMinutes = Math.max(1, Math.floor((Date.now() - new Date(lastSeen).getTime()) / 60000));
+
+  if (diffInMinutes < 60) {
+    return `Last seen ${diffInMinutes}m ago`;
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `Last seen ${diffInHours}h ago`;
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `Last seen ${diffInDays}d ago`;
+};
+
 const MessageStatus = ({ status }) => {
   if (status === 'read') return <CheckCheck size={12} className='text-indigo-300' />;
   if (status === 'delivered') return <CheckCheck size={12} className='opacity-50' />;
@@ -169,29 +189,22 @@ const Chat = () => {
     if (!connectedUser) return;
     const socket = createSocketConnection();
     socketRef.current = socket;
-    socket.emit('joinChat', { ...connectedUser });
-
-    // Receive new real-time messages
-    socket.on('receiveMessage', (newMsg) => {
+    const handleReceiveMessage = (newMsg) => {
       pendingScrollRef.current = 'smooth';
       setMessages((prev) => [...prev, newMsg]);
 
-      // Only mark as read if the tab is actually visible to the user
       if (newMsg.sender !== connectedUser.sourceUser.userId && document.visibilityState === 'visible') {
         socket.emit('markAsRead', { ...connectedUser });
       }
-    });
+    };
 
-    // When user switches back to this tab, mark unread messages as read
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         socket.emit('markAsRead', { ...connectedUser });
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Bulk status update (delivered / read) for all messages from a user
-    socket.on('messageStatusBulkUpdate', ({ status, updatedBy }) => {
+    const handleStatusUpdate = ({ status, updatedBy }) => {
       setMessages((prev) =>
         prev.map((msg) => {
           if (msg.sender !== updatedBy) {
@@ -200,20 +213,28 @@ const Chat = () => {
           return msg;
         }),
       );
-    });
+    };
 
-    socket.on('chatError', ({ message }) => {
+    const handleChatError = ({ message }) => {
       console.error('Chat error:', message);
-    });
+    };
 
-    // Mark existing messages as read on open only if tab is visible
+    socket.emit('joinChat', { ...connectedUser });
+    socket.on('receiveMessage', handleReceiveMessage);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    socket.on('messageStatusBulkUpdate', handleStatusUpdate);
+    socket.on('chatError', handleChatError);
+
     if (document.visibilityState === 'visible') {
       socket.emit('markAsRead', { ...connectedUser });
     }
 
     return () => {
+      socket.emit('leaveChat', { ...connectedUser });
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      socket.disconnect();
+      socket.off('receiveMessage', handleReceiveMessage);
+      socket.off('messageStatusBulkUpdate', handleStatusUpdate);
+      socket.off('chatError', handleChatError);
     };
   }, [connectedUser]);
 
@@ -305,14 +326,18 @@ const Chat = () => {
               </div>
             )}
           </div>
-          <span className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-[color:var(--bg-secondary)] rounded-full' />
+          <span
+            className={`absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-[color:var(--bg-secondary)] rounded-full ${targetUser?.isOnline ? 'block' : 'hidden'}`}
+          />
         </div>
 
         <div className='flex-1 min-w-0'>
           <p className='font-semibold text-[color:var(--text-primary)] truncate'>
             {firstName} {lastName}
           </p>
-          <p className='text-xs text-green-400'>Online</p>
+          <p className={`text-xs ${targetUser?.isOnline ? 'text-green-400' : 'text-[color:var(--text-tertiary)]'}`}>
+            {targetUser?.isOnline ? 'Online' : formatLastSeen(targetUser?.lastSeen)}
+          </p>
         </div>
       </div>
 
