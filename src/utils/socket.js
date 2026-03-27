@@ -11,7 +11,7 @@ export const createSocketConnection = () => {
       });
     } else {
       socketInstance = io('/', {
-        path: '/socket.io',
+        path: '/api/socket.io',
         withCredentials: true,
       });
     }
