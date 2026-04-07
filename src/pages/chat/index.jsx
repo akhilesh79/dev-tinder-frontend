@@ -5,6 +5,7 @@ import { ArrowLeft, Send, Check, CheckCheck, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { createSocketConnection } from '../../utils/socket';
 import { VITE_API_BASE_URL } from '../../constants/common';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const formatLastSeen = (lastSeen) => {
   if (!lastSeen) {
@@ -319,7 +320,11 @@ const Chat = () => {
         <div className='relative flex-shrink-0'>
           <div className='w-10 h-10 rounded-full overflow-hidden ring-2 ring-indigo-500/30'>
             {profileImage ? (
-              <img src={profileImage} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
+              <img
+                src={getImageUrl(profileImage)}
+                alt={`${firstName} ${lastName}`}
+                className='w-full h-full object-cover'
+              />
             ) : (
               <div className='w-full h-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold'>
                 {initials}

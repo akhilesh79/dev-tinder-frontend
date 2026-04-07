@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { VITE_API_BASE_URL } from '../../constants/common';
 import { useDispatch } from 'react-redux';
 import { clearRequest } from '../../store/appSlices/requestSlice';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const RequestCard = ({ request }) => {
   const { fromUserId, _id } = request;
@@ -32,7 +33,11 @@ const RequestCard = ({ request }) => {
         {/* Avatar */}
         <div className='w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 ring-2 ring-indigo-500/20'>
           {profileImage ? (
-            <img src={profileImage} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
+            <img
+              src={getImageUrl(profileImage)}
+              alt={`${firstName} ${lastName}`}
+              className='w-full h-full object-cover'
+            />
           ) : (
             <div className='w-full h-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold'>
               {(firstName || 'D').charAt(0).toUpperCase()}

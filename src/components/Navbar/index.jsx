@@ -8,6 +8,7 @@ import { VITE_API_BASE_URL } from '../../constants/common';
 import { toast } from 'react-toastify';
 import { clearUser } from '../../store/appSlices/userSlice';
 import { disconnectSocketConnection } from '../../utils/socket';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -130,7 +131,11 @@ const Navbar = () => {
                     className='flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[color:var(--bg-primary)] transition-all duration-200 cursor-pointer'
                   >
                     <div className='w-8 h-8 rounded-full overflow-hidden ring-2 ring-indigo-500/40 flex-shrink-0'>
-                      <img src={user.profileImage} alt={user.firstName} className='w-full h-full object-cover' />
+                      <img
+                        src={getImageUrl(user.profileImage)}
+                        alt={user.firstName}
+                        className='w-full h-full object-cover'
+                      />
                     </div>
                     <span className='hidden sm:block text-sm font-medium text-[color:var(--text-primary)] max-w-[90px] truncate'>
                       {user.firstName}
