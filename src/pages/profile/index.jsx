@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,10 +8,14 @@ import { setUser } from '../../store/appSlices/userSlice';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 import { Briefcase } from 'lucide-react';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const Profile = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [profileImagePreview, setProfileImagePreview] = useState('');
+
+  const getProfileImageSrc = (imageValue) => getImageUrl(imageValue);
 
   const schemaValidation = Yup.object({
     firstName: Yup.string().required('First name is required'),
@@ -19,7 +24,7 @@ const Profile = () => {
     gender: Yup.string().oneOf(['male', 'female', 'other'], 'Invalid gender').required('Gender is required'),
     about: Yup.string().max(500, 'About section cannot exceed 500 characters'),
     skills: Yup.array().of(Yup.string().oneOf(skillOptions.map((o) => o.value))),
-    profileImage: Yup.string().required('Profile image is required'),
+    profileImage: Yup.mixed().required('Profile image is required'),
   });
 
   const formik = useFormik({
@@ -36,7 +41,16 @@ const Profile = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(VITE_API_BASE_URL + 'api/profile/edit', values, { withCredentials: true });
+        let formData = new FormData();
+        formData.append('firstName', values.firstName);
+        formData.append('lastName', values.lastName);
+        formData.append('age', values.age);
+        formData.append('gender', values.gender);
+        formData.append('about', values.about);
+        formData.append('skills', JSON.stringify(values.skills));
+        formData.append('profileImage', values.profileImage);
+
+        const response = await axios.post(VITE_API_BASE_URL + 'api/profile/edit', formData, { withCredentials: true });
 
         if (!response.data) {
           throw new Error('No response data received');
@@ -51,6 +65,25 @@ const Profile = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (!formik.values.profileImage) {
+      setProfileImagePreview('');
+      return undefined;
+    }
+
+    if (formik.values.profileImage instanceof File) {
+      const objectUrl = URL.createObjectURL(formik.values.profileImage);
+      setProfileImagePreview(objectUrl);
+
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+    }
+
+    setProfileImagePreview(getProfileImageSrc(formik.values.profileImage));
+    return undefined;
+  }, [formik.values.profileImage]);
 
   const customSelectStyles = {
     control: (provided) => ({
@@ -111,12 +144,8 @@ const Profile = () => {
           <div className='bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 hover:border-slate-600 transition-all'>
             {/* Profile Image Banner */}
             <div className='relative h-40 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden'>
-              {formik.values.profileImage ? (
-                <img
-                  src={formik.values.profileImage}
-                  alt='Profile Banner'
-                  className='w-full h-full object-cover opacity-40'
-                />
+              {profileImagePreview ? (
+                <img src={profileImagePreview} alt='Profile Banner' className='w-full h-full object-cover opacity-40' />
               ) : (
                 <div className='w-full h-full bg-gradient-to-r from-indigo-600 to-purple-600'></div>
               )}
@@ -127,9 +156,9 @@ const Profile = () => {
               {/* Avatar */}
               <div className='flex justify-center -mt-16 mb-4'>
                 <div className='relative'>
-                  {formik.values.profileImage ? (
+                  {profileImagePreview ? (
                     <img
-                      src={formik.values.profileImage}
+                      src={profileImagePreview}
                       alt='Avatar'
                       className='w-32 h-32 rounded-full border-4 border-slate-800 object-cover shadow-lg'
                     />
@@ -234,18 +263,66 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* Profile Image URL */}
+              {/* Profile Image Upload */}
               <div>
-                <label className='block text-sm font-semibold text-slate-300 mb-2'>Profile Image URL</label>
+                <label className='block text-sm font-semibold text-slate-300 mb-3'>Profile Image</label>
+
                 <input
-                  type='text'
+                  type='file'
                   id='profileImage'
-                  {...formik.getFieldProps('profileImage')}
-                  className={`w-full bg-slate-700 border rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
-                    formik.touched.profileImage && formik.errors.profileImage ? 'border-red-500' : 'border-slate-600'
-                  }`}
-                  placeholder='https://example.com/image.jpg'
+                  accept='image/*'
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0] || '';
+                    formik.setFieldValue('profileImage', file);
+                    formik.setFieldTouched('profileImage', true, false);
+                  }}
+                  className='hidden'
                 />
+
+                <div
+                  className={`rounded-2xl border p-4 transition ${
+                    formik.touched.profileImage && formik.errors.profileImage
+                      ? 'border-red-500 bg-red-500/5'
+                      : 'border-slate-600 bg-slate-700/40'
+                  }`}
+                >
+                  <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
+                    <div className='h-20 w-20 overflow-hidden rounded-2xl border border-slate-600 bg-slate-800'>
+                      {profileImagePreview ? (
+                        <img
+                          src={profileImagePreview}
+                          alt='Selected profile preview'
+                          className='h-full w-full object-cover'
+                        />
+                      ) : (
+                        <div className='flex h-full w-full items-center justify-center text-xs text-slate-400'>
+                          No image
+                        </div>
+                      )}
+                    </div>
+
+                    <div className='flex-1'>
+                      <p className='text-sm font-medium text-white'>
+                        {formik.values.profileImage instanceof File
+                          ? formik.values.profileImage.name
+                          : formik.values.profileImage
+                            ? 'Current profile image'
+                            : 'No image selected'}
+                      </p>
+                      <p className='mt-1 text-xs text-slate-400'>
+                        PNG, JPG, or WEBP. Upload a clear square photo for best results.
+                      </p>
+                    </div>
+
+                    <label
+                      htmlFor='profileImage'
+                      className='inline-flex cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500'
+                    >
+                      Upload image
+                    </label>
+                  </div>
+                </div>
+
                 {formik.touched.profileImage && formik.errors.profileImage && (
                   <p className='text-red-400 text-xs mt-1'>{formik.errors.profileImage}</p>
                 )}

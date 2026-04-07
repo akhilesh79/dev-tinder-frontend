@@ -1,5 +1,6 @@
 import { MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const formatLastSeen = (lastSeen) => {
   if (!lastSeen) {
@@ -31,7 +32,11 @@ const ConnectionCard = ({ connection }) => {
         <div className='absolute -bottom-7 left-4'>
           <div className='w-14 h-14 rounded-full overflow-hidden border-3 border-[color:var(--bg-secondary)] ring-2 ring-[color:var(--border-color)] group-hover:ring-indigo-500/40 transition-all'>
             {profileImage ? (
-              <img src={profileImage} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
+              <img
+                src={getImageUrl(profileImage)}
+                alt={`${firstName} ${lastName}`}
+                className='w-full h-full object-cover'
+              />
             ) : (
               <div className='w-full h-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold'>
                 {(firstName || 'D').charAt(0).toUpperCase()}

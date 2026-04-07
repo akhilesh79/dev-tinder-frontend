@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { VITE_API_BASE_URL } from '../../constants/common';
 import { useDispatch } from 'react-redux';
 import { removeFeed } from '../../store/appSlices/feedSlice';
+import { getImageUrl } from '../../utils/getImageUrl';
 
 const UserCard = ({ userFeed }) => {
   const { _id, profileImage, age, gender, firstName, lastName, about, skills } = userFeed;
@@ -36,7 +37,11 @@ const UserCard = ({ userFeed }) => {
         {/* Profile image with gradient overlay */}
         <div className='relative h-[420px] sm:h-[460px] overflow-hidden'>
           {profileImage ? (
-            <img src={profileImage} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
+            <img
+              src={getImageUrl(profileImage)}
+              alt={`${firstName} ${lastName}`}
+              className='w-full h-full object-cover'
+            />
           ) : (
             <div className='w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center'>
               <span className='text-white text-7xl font-bold font-poppins'>
