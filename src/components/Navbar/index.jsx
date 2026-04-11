@@ -3,12 +3,11 @@ import { Heart, Moon, Sun, Menu, X, Users, Bell, User, LogOut, Compass, Crown, C
 import { ThemeContext } from '../../context/themeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { VITE_API_BASE_URL } from '../../constants/common';
 import { toast } from 'react-toastify';
 import { clearUser } from '../../store/appSlices/userSlice';
 import { disconnectSocketConnection } from '../../utils/socket';
 import { getImageUrl } from '../../utils/getImageUrl';
+import { useLogoutMutation } from './apiSlice';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -18,9 +17,11 @@ const Navbar = () => {
   const user = useSelector((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const [handleLogout] = useLogoutMutation();
+
+  const handleLogoutUser = async () => {
     try {
-      const response = await axios.post(VITE_API_BASE_URL + 'api/auth/logout', {}, { withCredentials: true });
+      const response = await handleLogout().unwrap();
       disconnectSocketConnection();
       dispatch(clearUser());
       navigate('/login');
@@ -168,7 +169,7 @@ const Navbar = () => {
                     <div className='my-1 h-px bg-[color:var(--border-color)]'></div>
                     <li>
                       <button
-                        onClick={handleLogout}
+                        onClick={handleLogoutUser}
                         className='flex w-full items-center gap-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-500'
                       >
                         <LogOut size={15} /> Logout
@@ -234,7 +235,7 @@ const Navbar = () => {
           </Link>
           <div className='pt-2 border-t border-[color:var(--border-color)]'>
             <button
-              onClick={handleLogout}
+              onClick={handleLogoutUser}
               className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-500 hover:bg-red-500/10 w-full transition-all'
             >
               <LogOut size={16} /> Logout
